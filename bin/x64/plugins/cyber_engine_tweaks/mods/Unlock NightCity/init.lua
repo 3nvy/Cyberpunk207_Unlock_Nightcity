@@ -1,4 +1,45 @@
-local floorData = {}
+-- Change Slot Cooldown Time Here (in minutes)
+slotCoolDownTime = 1440
+
+
+-- Mod Code
+packages = {}
+rootPath = "Unlock NightCity."
+
+packages.ItemsManager = require(rootPath .. "misc.items")
+
+local ss = Game.GetStatsSystem()
+local ps = Game.GetPersistencySystem()
+local tt = Game.GetTargetingSystem()
+local lm = Game.GetLootManager()
+local ts = Game.GetTransactionSystem()
+local tp = Game.GetTeleportationFacility()
+local qs = Game.GetQuestsSystem()
+local tsm = Game.GetTimeSystem()
+
+isCoolingDown = false
+lastTimeUsedSlot = 0
+showSlotWindow = false
+windowOpenTime = 0
+
+function enableTooltip()
+	windowOpenTime = os:clock()
+	showSlotWindow = true
+end
+
+function drawSlotWindow()
+	ImGui.BeginTooltip()
+		ImGui.SetWindowFontScale(1.6)
+		ImGui.Spacing()
+		if isCoolingDown then
+			ImGui.TextColored(0.2, 1, 1, 1, "Slot Still In Cooldown")
+		else
+			ImGui.TextColored(0.2, 1, 1, 1, "ITEM GENERATED!")
+		end
+		
+		ImGui.Spacing()
+	ImGui.EndTooltip()
+end
 
 function unlockingLiftPanel(devicePS)
 	for i = 0, #devicePS:GetFloors() do
@@ -76,6 +117,52 @@ function round(n)
 	return n % 1 >= 0.5 and math.ceil(n) or math.floor(n)
 end
 
+function generateRandomQuality(itemData, isSpecial)
+	local newQuality = math.random (3, 4);
+
+	local statObj = itemData:GetStatsObjectID() -- Get Item Stats Obj
+
+	local itemQuality = ss:GetStatValue(statObj, 'Quality')
+	
+	ss:RemoveAllModifiers(statObj, 'Quality', true)
+	
+	local qualityMod = Game['gameRPGManager::CreateStatModifier;gamedataStatTypegameStatModifierTypeFloat']('Quality', 'Additive', newQuality)
+	
+	ss:AddSavedModifier(statObj, qualityMod);
+end
+
+function generateRandomItem()
+	local itemTypes = { "Weapons", "Clothes" }
+	local randomTypeGeneration = math.random(1, 2)
+
+	local itemID = nil
+
+	if itemTypes[randomTypeGeneration] == "Weapons" then
+		local listOfWeapons = packages.ItemsManager.Weapons()
+		itemID = listOfWeapons[math.random (1, #listOfWeapons)]
+	else
+		local listOfClothes = packages.ItemsManager.Clothes()
+		itemID = listOfClothes[math.random (1, #listOfClothes)]
+	end
+
+	local tdbid = TweakDBID.new(itemID)
+	local item = ItemID.new(tdbid, math.random (100, 9999999999))
+	return item
+end
+
+function getNextSlotUsableTime()
+	local currentGameTime = tsm:GetGameTime()
+	local coolDownDays = math.floor(slotCoolDownTime/1440)
+	local days = currentGameTime:Days(currentGameTime) + coolDownDays
+	local hours = currentGameTime:Hours(currentGameTime) + math.floor((slotCoolDownTime-(coolDownDays*1440))/60)
+	local minutes = currentGameTime:Minutes(currentGameTime) + math.floor((slotCoolDownTime%60)+0.5)
+	local seconds = currentGameTime:Seconds(currentGameTime)
+
+	local newGameTime = currentGameTime:MakeGameTime(days, hours, minutes, seconds)
+
+	return newGameTime:GetSeconds(newGameTime)
+end
+
 
 local allowedDoors = {
 	-- Konpeki Tower
@@ -113,6 +200,8 @@ local allowedDoors = {
 	peralezPenthouseLookedDoor1 = { x = -78, y = -112, z = 111, type = 'Door' },
 	peralezPenthouseLookedDoor2 = { x = -99, y = -111, z = 111, type = 'Door' },
 	peralezPenthouseLookedDoor3 = { x = -69, y = -128, z = 111, type = 'Door' },
+	peralezPenthouseSecretDoor1 = { x = -68, y = -121, z = 115, type = 'Door' },
+	peralezPenthouseSecretDoor2 = { x = -69, y = -122, z = 123, type = 'Door' },
 
 	-- MLK and Brendon Hotel
 	MLKandBrendonHotelDoor1 = { x = -574, y = -828, z = 8, type = 'Door' },
@@ -166,18 +255,23 @@ local locations = {
 	konpekiTowerSecretRoom4Out = { x1 = -2200.3833, y1 = 1780.5854, x2 = -2202.0574, y2 = 1778.7885, z = 123, ang = { min = -170, max = -121 }, tp = { x = -2206.7888, y = 1752.9232, z = 163.01001, w = 1.0, ang = 121.31513214111 } },
 }
 
+local slotMachines = {
+	-- V Apartment
+	vApartmentOutsideVendorMachine = { x = -1394, y = 1278, z = 123, spawnLoc = { x = -1394.4841, y = 1277.2742, z = 123.1824, w = 1.0 }, type = 'Special' },
+}
+
+
 
 -- print(Game.GetTargetingSystem():GetLookAtObject(Game.GetPlayer(), false, false):GetWorldPosition())
 
 registerForEvent("onInit", function()
-	print("[Unlock NightCity] Initialized | Version: 1.2.3")
+	print("[Unlock NightCity] Initialized | Version: 1.3.1")
+	readTime()
 end)
 
 registerForEvent("onUpdate", function()
 
 	if (ImGui.IsKeyPressed(0x46, false)) then -- Press F
-		tp = Game.GetTeleportationFacility()
-		ts = Game.GetTargetingSystem()
 		player = Game.GetPlayer()
 		pPos = player:GetWorldPosition()
 		ang = player:GetWorldYaw()
@@ -205,7 +299,7 @@ registerForEvent("onUpdate", function()
 			end
 		end
 
-		object = ts:GetLookAtObject(player, false, false)
+		object = tt:GetLookAtObject(player, false, false)
 		if object then 
 			objCoords = object:GetWorldPosition()
 
@@ -217,6 +311,51 @@ registerForEvent("onUpdate", function()
 			if string.sub(GameDump(object), 0, 22) == "ElevatorFloorTerminal[" then
 				unlockElevatorTerminal(object)
 				return
+			end
+
+		
+			if object:ToString() == 'VendingMachine' then
+				local currentTime = tsm:GetGameTimeStamp()
+				local lastTimeUsedSlot = qs:GetFactStr("lastTimeUsedSlot")
+
+				for sMachine, sMachineData in pairs(slotMachines) do
+
+					match = sMachineData.x == round(objCoords.x) and sMachineData.y == round(objCoords.y)
+					matchz = sMachineData.z == nil or sMachineData.z == round(objCoords.z)
+	
+					if match and matchz then
+	
+						if(slotCoolDownTime == 0 or currentTime > lastTimeUsedSlot) then
+
+							isCoolingDown = false
+
+							-- if(not object:IsActive()) then
+							-- 	ps:QueuePSDeviceEvent(object:GetDevicePS():ActionToggleON())
+							-- end
+	
+							local item = generateRandomItem() -- Generate Random Item
+	
+							ts:GiveItem(object, item , 1) -- Give Item to slotMachine
+	
+							local itemData = ts:GetItemData(object, item) -- Get Item Data
+							
+							generateRandomQuality(itemData) -- Generate Random Quality
+			
+							lm:SpawnItemDrop(object, item, ToVector4{ x = sMachineData.spawnLoc.x, y = sMachineData.spawnLoc.y, z = sMachineData.spawnLoc.z, w = 1.0 } , Game.GetPlayer():GetWorldOrientation())
+
+							qs:SetFactStr("lastTimeUsedSlot", getNextSlotUsableTime())
+
+							enableTooltip()
+						else
+							isCoolingDown = true
+							enableTooltip()
+						end
+
+						return
+					end
+	
+				end
+
 			end
 
 			for device, deviceData in pairs(allowedDoors) do
@@ -247,4 +386,16 @@ registerForEvent("onUpdate", function()
 end)
 
 
+registerForEvent("onDraw", function()
+	ImGui.PushStyleColor(ImGuiCol.PopupBg, 0.21, 0.08, 0.08, 0.85)
+	ImGui.PushStyleColor(ImGuiCol.Border, 0.4, 0.17, 0.12, 1)
+	ImGui.PushStyleColor(ImGuiCol.Separator, 0.4, 0.17, 0.12, 1)
+	if (showSlotWindow) then
+		drawSlotWindow()
+		if (os:clock() > windowOpenTime + 1) then
+			showSlotWindow = false
+		end
+	end
+	ImGui.PopStyleColor(3)
+end)
 
