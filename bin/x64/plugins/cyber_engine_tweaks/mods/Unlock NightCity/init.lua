@@ -7,22 +7,27 @@ smugglingCost = 50000
 
 -- Mod Code
 packages = {}
-rootPath = "Unlock NightCity."
-
-packages.ItemsManager = require(rootPath .. "misc.items")
-packages.TeleportManager = require(rootPath .. "teleports.teleports")
-packages.DoorManager = require(rootPath .. "doors.doors")
-packages.DeviceManager = require(rootPath .. "devices.devices")
-packages.SlotMachineManager = require(rootPath .. "slotmachine.slotmachine")
-packages.SmugglerManager = require(rootPath .. "smuggler.smuggler")
+rootPath = "bin.x64.plugins.cyber_engine_tweaks.mods.Unlock NightCity."
 
 
-local tt = Game.GetTargetingSystem()
+
+function loadPackages()
+	packages.ItemsManager = require(rootPath .. "misc.items")
+	packages.TeleportManager = require(rootPath .. "teleports.teleports")
+	packages.DoorManager = require(rootPath .. "doors.doors")
+	packages.DeviceManager = require(rootPath .. "devices.devices")
+	packages.SlotMachineManager = require(rootPath .. "slotmachine.slotmachine")
+	packages.SmugglerManager = require(rootPath .. "smuggler.smuggler")
+end
 
 -- print(Game.GetTargetingSystem():GetLookAtObject(Game.GetPlayer(), false, false):GetWorldPosition())
-
+-- Game.GetTargetingSystem():GetLookAtObject(Game.GetPlayer(), false, false):GetDevicePS():ActionNextStation()
 registerForEvent("onInit", function()
-	print("[Unlock NightCity] Initialized | Version: 1.3.1")
+	loadPackages()
+
+	tt = Game.GetTargetingSystem()
+
+	print("[Unlock NightCity] Initialized | Version: 1.3.2")
 end)
 
 registerForEvent("onUpdate", function()
@@ -30,6 +35,20 @@ registerForEvent("onUpdate", function()
 	local stopAfter = false
 
 	packages.SmugglerManager.UpdateSmugglerWindow()
+
+
+
+	if (ImGui.IsKeyPressed(0x25, false)) then
+		local object = tt:GetLookAtObject(Game.GetPlayer(), false, false)
+		packages.DeviceManager.SwitchPreviousTVChannel(object)
+	end
+	
+	if (ImGui.IsKeyPressed(0x27, false)) then
+		local object = tt:GetLookAtObject(Game.GetPlayer(), false, false)
+		packages.DeviceManager.SwitchPreviousTVChannel(object)
+	end
+
+
 
 	if (ImGui.IsKeyPressed(0x46, false)) then -- Press F
 
@@ -58,7 +77,6 @@ registerForEvent("onUpdate", function()
 		stopAfter = packages.SmugglerManager.CheckSmuggler(object, smugglingCost)
 		if stopAfter then return end
 
-
 	end
 
 end)
@@ -67,7 +85,7 @@ registerForEvent("onDraw", function()
 	ImGui.PushStyleColor(ImGuiCol.PopupBg, 0.21, 0.08, 0.08, 0.85)
 	ImGui.PushStyleColor(ImGuiCol.Border, 0.4, 0.17, 0.12, 1)
 	ImGui.PushStyleColor(ImGuiCol.Separator, 0.4, 0.17, 0.12, 1)
-
+	
 	if (drawSmuggleWindow) then
 		ImGui.BeginTooltip()
 		ImGui.SetWindowFontScale(1.6)

@@ -63,6 +63,19 @@ function turnOffComputer(devicePS)
 end
 
 
+function DeviceManager.SwitchPreviousTVChannel(object)
+	if object and object:ToString() == "TV" then
+		ps:QueuePSDeviceEvent(object:GetDevicePS():ActionPreviousStation())
+	end
+end
+
+function DeviceManager.SwitchNextTVChannel(object)
+	if  object and object:ToString() == "TV" then
+		ps:QueuePSDeviceEvent(object:GetDevicePS():ActionNextStation())
+	end
+end
+
+
 function DeviceManager.CheckDevice(object)
 
 	if object:ToString() == "LiftDevice" then
@@ -78,6 +91,11 @@ function DeviceManager.CheckDevice(object)
 	elseif object:ToString() == "Computer" then
 
 		turnOffComputer(object:GetDevicePS())
+		return true
+
+	elseif object:ToString() == "TV" then
+
+		ps:QueuePSDeviceEvent(object:GetDevicePS():ActionToggleON())
 		return true
 	
 	end
