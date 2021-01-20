@@ -75,6 +75,12 @@ function DeviceManager.SwitchNextTVChannel(object)
 	end
 end
 
+function DeviceManager.TurnOffComputer(object)
+	if  object and object:ToString() == "Computer" then
+		turnOffComputer(object:GetDevicePS())
+	end
+end
+
 
 function DeviceManager.CheckDevice(object)
 
@@ -87,12 +93,7 @@ function DeviceManager.CheckDevice(object)
 
 		unlockElevatorTerminal(object)
 		return true
-
-	elseif object:ToString() == "Computer" then
-
-		turnOffComputer(object:GetDevicePS())
-		return true
-
+		
 	elseif object:ToString() == "TV" then
 
 		ps:QueuePSDeviceEvent(object:GetDevicePS():ActionToggleON())
