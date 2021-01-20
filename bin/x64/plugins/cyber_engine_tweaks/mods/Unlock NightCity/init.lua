@@ -27,7 +27,7 @@ registerForEvent("onInit", function()
 
 	tt = Game.GetTargetingSystem()
 
-	print("[Unlock NightCity] Initialized | Version: 1.4.0")
+	print("[Unlock NightCity] Initialized | Version: 1.4.1")
 end)
 
 registerForEvent("onUpdate", function()
@@ -35,8 +35,6 @@ registerForEvent("onUpdate", function()
 	local stopAfter = false
 
 	packages.SmugglerManager.UpdateSmugglerWindow()
-
-
 
 	if (ImGui.IsKeyPressed(0x25, false)) then
 		local object = tt:GetLookAtObject(Game.GetPlayer(), false, false)
@@ -48,6 +46,10 @@ registerForEvent("onUpdate", function()
 		packages.DeviceManager.SwitchPreviousTVChannel(object)
 	end
 
+	if (ImGui.IsKeyDown(0x10) and ImGui.IsKeyPressed(0x46, false)) then
+		local object = tt:GetLookAtObject(Game.GetPlayer(), false, false)
+		packages.DeviceManager.TurnOffComputer(object)
+	end
 
 
 	if (ImGui.IsKeyPressed(0x46, false)) then -- Press F
