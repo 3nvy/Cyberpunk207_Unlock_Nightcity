@@ -1359,4 +1359,8 @@ function ItemsManager.Clothes()
     return ClothesList
 end
 
+function ItemsManager.Log()
+	print('[Unlock NightCity] ItemsManager Loaded')
+end
+
 return ItemsManager

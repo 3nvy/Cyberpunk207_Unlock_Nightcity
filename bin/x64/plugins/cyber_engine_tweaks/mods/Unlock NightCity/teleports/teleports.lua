@@ -60,4 +60,8 @@ function TeleportManager.CheckTeleport()
 	end
 end
 
+function TeleportManager.Log()
+	print('[Unlock NightCity] TeleportManager Loaded')
+end
+
 return TeleportManager

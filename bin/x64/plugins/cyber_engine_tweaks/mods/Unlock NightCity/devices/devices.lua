@@ -103,4 +103,8 @@ function DeviceManager.CheckDevice(object)
 
 end
 
+function DeviceManager.Log()
+	print('[Unlock NightCity] DeviceManager Loaded')
+end
+
 return DeviceManager

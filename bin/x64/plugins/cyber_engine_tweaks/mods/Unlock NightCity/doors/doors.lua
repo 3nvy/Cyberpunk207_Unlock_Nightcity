@@ -61,6 +61,13 @@ local AllowedDoors = {
 	delamainHQDoor11 = { x = -984, y = -149, z = 6, type = 'FakeDoor' },
 	delamainHQDoor12 = { x = -972, y = -162, z = 8, type = 'Door' },
 
+	-- Lizzy's Bar
+	lizzysBarPodDoor1 = { x = -1171, y = 1583, z = 23, type = 'Door' },
+	lizzysBarPodDoor2 = { x = -1174, y = 1583, z = 23, type = 'Door' },
+	lizzysBarPodDoor3 = { x = -1177, y = 1583, z = 23, type = 'Door' },
+	lizzysBarPodDoor4 = { x = -1180, y = 1584, z = 23, type = 'Door' },
+	lizzysBarPodDoor5 = { x = -1183, y = 1584, z = 23, type = 'Door' },
+
 }
 
 function unlockDoor(object)
@@ -110,6 +117,10 @@ function DoorManager.CheckAllowedDoor(object)
 
 	end
 
+end
+
+function DoorManager.Log()
+	print('[Unlock NightCity] DoorManager Loaded')
 end
 
 return DoorManager

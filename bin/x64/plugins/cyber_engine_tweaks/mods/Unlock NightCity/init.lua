@@ -4,24 +4,38 @@ slotCoolDownTime = 1440
 -- Change Smuggling Cost
 smugglingCost = 50000
 
+-- Enable Debug
+enableDebug = false
 
 -- Mod Code
-packages = {}
-rootPath = "bin.x64.plugins.cyber_engine_tweaks.mods.Unlock NightCity."
+packages = {
+	ItemsManager = "misc.items",
+	TeleportManager = "teleports.teleports",
+	DoorManager = "doors.doors",
+	DeviceManager = "devices.devices",
+	SlotMachineManager = "slotmachine.slotmachine",
+	SmugglerManager = "smuggler.smuggler",
+}
+
+-- rootPath = "bin.x64.plugins.cyber_engine_tweaks.mods.Unlock NightCity."
+rootPath = "plugins.cyber_engine_tweaks.mods.Unlock NightCity."
 
 
 
 function loadPackages()
-	packages.ItemsManager = require(rootPath .. "misc.items")
-	packages.TeleportManager = require(rootPath .. "teleports.teleports")
-	packages.DoorManager = require(rootPath .. "doors.doors")
-	packages.DeviceManager = require(rootPath .. "devices.devices")
-	packages.SlotMachineManager = require(rootPath .. "slotmachine.slotmachine")
-	packages.SmugglerManager = require(rootPath .. "smuggler.smuggler")
+
+	for pkgName, pkgLocation in pairs(packages) do
+		packages[pkgName] = require(rootPath .. pkgLocation)
+
+		if enableDebug then
+			packages[pkgName].Log()
+		end
+		
+	end
+
 end
 
 -- print(Game.GetTargetingSystem():GetLookAtObject(Game.GetPlayer(), false, false):GetWorldPosition())
--- Game.GetTargetingSystem():GetLookAtObject(Game.GetPlayer(), false, false):GetDevicePS():ActionNextStation()
 registerForEvent("onInit", function()
 	loadPackages()
 
@@ -31,7 +45,7 @@ registerForEvent("onInit", function()
 end)
 
 registerForEvent("onUpdate", function()
-	
+
 	local stopAfter = false
 
 	packages.SmugglerManager.UpdateSmugglerWindow()

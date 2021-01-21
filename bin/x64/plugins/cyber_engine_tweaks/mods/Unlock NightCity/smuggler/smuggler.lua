@@ -43,4 +43,8 @@ function SmugglerManager.CheckSmuggler(object, smugglingCost)
 
 end
 
+function SmugglerManager.Log()
+	print('[Unlock NightCity] SmugglerManager Loaded')
+end
+
 return SmugglerManager
