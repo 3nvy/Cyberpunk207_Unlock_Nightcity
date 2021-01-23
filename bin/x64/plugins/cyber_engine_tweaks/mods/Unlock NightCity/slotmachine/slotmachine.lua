@@ -113,5 +113,9 @@ function SlotMachineManager.CheckSlotMachine(object, slotCoolDownTime, ItemsMana
 
 end
 
+function SlotMachineManager.Log()
+	print('[Unlock NightCity] SlotMachineManager Loaded')
+end
+
 
 return SlotMachineManager

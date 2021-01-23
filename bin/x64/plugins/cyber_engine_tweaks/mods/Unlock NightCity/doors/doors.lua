@@ -22,7 +22,7 @@ local AllowedDoors = {
 
 	-- Maelstrom Hideout
 	maelstromHideoutGarage = { x = -774, y = 2203, z = 51, type = 'Door' },
-	maelstromHideoutDoor1 = { x = -828, y = 2236, z = 55, type = 'FakeDoor' },
+	maelstromHideoutDoor1 = { x = -828, y = 2236, z = 55, type = 'Door' },
 	maelstromHideoutDoor2 = { x = -878, y = 2221, z = 61, type = 'Door' },
 	maelstromHideoutDoor3 = { x = -785, y = 2189, z = 53, type = 'Door' },
 
@@ -60,6 +60,13 @@ local AllowedDoors = {
 	delamainHQDoor10 = { x = -979, y = -139, z = 3, type = 'Door' },
 	delamainHQDoor11 = { x = -984, y = -149, z = 6, type = 'FakeDoor' },
 	delamainHQDoor12 = { x = -972, y = -162, z = 8, type = 'Door' },
+
+	-- Lizzy's Bar
+	lizzysBarPodDoor1 = { x = -1171, y = 1583, z = 23, type = 'Door' },
+	lizzysBarPodDoor2 = { x = -1174, y = 1583, z = 23, type = 'Door' },
+	lizzysBarPodDoor3 = { x = -1177, y = 1583, z = 23, type = 'Door' },
+	lizzysBarPodDoor4 = { x = -1180, y = 1584, z = 23, type = 'Door' },
+	lizzysBarPodDoor5 = { x = -1183, y = 1584, z = 23, type = 'Door' },
 
 }
 
@@ -110,6 +117,10 @@ function DoorManager.CheckAllowedDoor(object)
 
 	end
 
+end
+
+function DoorManager.Log()
+	print('[Unlock NightCity] DoorManager Loaded')
 end
 
 return DoorManager
