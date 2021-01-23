@@ -17,10 +17,7 @@ packages = {
 	SmugglerManager = "smuggler.smuggler",
 }
 
--- rootPath = "bin.x64.plugins.cyber_engine_tweaks.mods.Unlock NightCity."
 rootPath = "plugins.cyber_engine_tweaks.mods.Unlock NightCity."
-
-
 
 function loadPackages()
 
@@ -41,59 +38,58 @@ registerForEvent("onInit", function()
 
 	tt = Game.GetTargetingSystem()
 
-	print("[Unlock NightCity] Initialized | Version: 1.4.1")
+	print("[Unlock NightCity] Initialized | Version: 1.4.2")
 end)
+
+
+registerHotkey("prev_tv_channel", "Prev TV Channel", function() -- Left Arrow 
+	local object = tt:GetLookAtObject(Game.GetPlayer(), false, false)
+	packages.DeviceManager.SwitchPreviousTVChannel(object)
+end)
+
+registerHotkey("next_tv_channel", "Next TV Channel", function() -- Right Arrow 
+	local object = tt:GetLookAtObject(Game.GetPlayer(), false, false)
+	packages.DeviceManager.SwitchPreviousTVChannel(object)
+end)
+
+registerHotkey("turn_off_computer", "Turn Off Computer", function() -- Shift + F 
+	local object = tt:GetLookAtObject(Game.GetPlayer(), false, false)
+	packages.DeviceManager.TurnOffComputer(object)
+end)
+
+registerHotkey("main_mod_function_key", "Main Mod Function Key", function() -- Shift + F 
+	local stopAfter = false
+
+	-- Check for Teleport location
+	stopAfter = packages.TeleportManager.CheckTeleport()
+	if stopAfter then return end
+
+	-- Stop Runtime If No Object Found
+	local object = tt:GetLookAtObject(Game.GetPlayer(), false, false)
+	if not object then return end
+
+	-- Check for Devices
+	stopAfter = packages.DeviceManager.CheckDevice(object)
+	if stopAfter then return end
+
+	-- Check for SlotMachine
+	stopAfter = packages.SlotMachineManager.CheckSlotMachine(object, slotCoolDownTime, packages.ItemsManager)
+	if stopAfter then return end
+
+	-- Check for Allowed Doors
+	stopAfter = packages.DoorManager.CheckAllowedDoor(object)
+	if stopAfter then return end
+
+
+	-- Check for Smuggler
+	stopAfter = packages.SmugglerManager.CheckSmuggler(object, smugglingCost)
+	if stopAfter then return end
+end)
+
 
 registerForEvent("onUpdate", function()
 
-	local stopAfter = false
-
 	packages.SmugglerManager.UpdateSmugglerWindow()
-
-	if (ImGui.IsKeyPressed(0x25, false)) then
-		local object = tt:GetLookAtObject(Game.GetPlayer(), false, false)
-		packages.DeviceManager.SwitchPreviousTVChannel(object)
-	end
-	
-	if (ImGui.IsKeyPressed(0x27, false)) then
-		local object = tt:GetLookAtObject(Game.GetPlayer(), false, false)
-		packages.DeviceManager.SwitchPreviousTVChannel(object)
-	end
-
-	if (ImGui.IsKeyDown(0x10) and ImGui.IsKeyPressed(0x46, false)) then
-		local object = tt:GetLookAtObject(Game.GetPlayer(), false, false)
-		packages.DeviceManager.TurnOffComputer(object)
-	end
-
-
-	if (ImGui.IsKeyPressed(0x46, false)) then -- Press F
-
-		-- Check for Teleport location
-		stopAfter = packages.TeleportManager.CheckTeleport()
-		if stopAfter then return end
-
-		-- Stop Runtime If No Object Found
-		local object = tt:GetLookAtObject(Game.GetPlayer(), false, false)
-		if not object then return end
-
-		-- Check for Devices
-		stopAfter = packages.DeviceManager.CheckDevice(object)
-		if stopAfter then return end
-
-		-- Check for SlotMachine
-		stopAfter = packages.SlotMachineManager.CheckSlotMachine(object, slotCoolDownTime, packages.ItemsManager)
-		if stopAfter then return end
-
-		-- Check for Allowed Doors
-		stopAfter = packages.DoorManager.CheckAllowedDoor(object)
-		if stopAfter then return end
-
-
-		-- Check for Smuggler
-		stopAfter = packages.SmugglerManager.CheckSmuggler(object, smugglingCost)
-		if stopAfter then return end
-
-	end
 
 end)
 

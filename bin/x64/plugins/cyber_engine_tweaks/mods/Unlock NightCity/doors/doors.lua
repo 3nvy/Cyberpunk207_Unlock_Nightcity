@@ -22,7 +22,7 @@ local AllowedDoors = {
 
 	-- Maelstrom Hideout
 	maelstromHideoutGarage = { x = -774, y = 2203, z = 51, type = 'Door' },
-	maelstromHideoutDoor1 = { x = -828, y = 2236, z = 55, type = 'FakeDoor' },
+	maelstromHideoutDoor1 = { x = -828, y = 2236, z = 55, type = 'Door' },
 	maelstromHideoutDoor2 = { x = -878, y = 2221, z = 61, type = 'Door' },
 	maelstromHideoutDoor3 = { x = -785, y = 2189, z = 53, type = 'Door' },
 
