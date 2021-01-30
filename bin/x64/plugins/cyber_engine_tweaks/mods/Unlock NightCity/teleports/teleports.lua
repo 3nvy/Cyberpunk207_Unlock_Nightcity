@@ -28,6 +28,11 @@ local TeleportLocations = {
 	konpekiTowerSecretRoom3Out = { x1 = -2199.6538, y1 = 1779.2875, x2 = -2201.5762, y2 = 1777.4906, z = 139, ang = { min = -177, max = -121 }, tp = { x = -2211.9104, y = 1767.8201, z = 163.01001, w = 1.0, ang = -151.33483886719 } },
 	konpekiTowerSecretRoom4In = { x1 = -2205.9104, y1 = 1753.5205, x2 = -2207.4482, y2 = 1751.6868, z = 163, ang = { min = -86, max = -29 }, tp = { x = -2201.2744, y = 1779.4202, z = 122.8, w = 1.0, ang = 28.609071731567 } },
 	konpekiTowerSecretRoom4Out = { x1 = -2200.3833, y1 = 1780.5854, x2 = -2202.0574, y2 = 1778.7885, z = 123, ang = { min = -170, max = -121 }, tp = { x = -2206.7888, y = 1752.9232, z = 163.01001, w = 1.0, ang = 121.31513214111 } },
+
+	-- Jig-Jig Apartment
+	JigJigApartmentIn = { x1 = -668.08746, y1 = 878.67535, x2 = -671.13214, y2 = 875.0415, z = nil, ang = { min = -176, max = -126 }, tp = { x = -665.6719, y = 854.45044, z = 28.5, w = 1.0, ang = -170.33335876465 } },
+	JigJigApartmentOut = { x1 = -664.56305, y1 = 857.5872, x2 = -667.1586, y2 = 853.34174, z = nil, ang = { min = -10, max = 33 }, tp = { x = -670.1892, y = 878.28455, z = 20.174019, w = 1.0, ang = 17.166879653931 } },
+	
 }
 
 function TeleportManager.CheckTeleport()

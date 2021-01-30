@@ -68,6 +68,26 @@ local AllowedDoors = {
 	lizzysBarPodDoor4 = { x = -1180, y = 1584, z = 23, type = 'Door' },
 	lizzysBarPodDoor5 = { x = -1183, y = 1584, z = 23, type = 'Door' },
 
+	-- Shooting Range
+	ShootingRangeDoor = { x = -1463, y = 1309, z = 119, type = 'Door' },
+
+	-- Barry Lewis's Apartment
+	BarryLewisApartmentDoor = { x = -1394, y = 1302, z = 119, type = 'Door' },
+
+	-- Rogue's Apartment
+	RogueApartmentDoor = { x = -1424, y = 991, z = 17, type = 'Door' },
+
+	-- Finger's Apartment
+	FingersApartmentDoor1 = { x = -566, y = 795, z = 25, type = 'Door' },
+	FingersApartmentDoor2 = { x = -574, y = 798, z = 25, type = 'Door' },
+
+	-- Lake Farm House
+	LakeFarmHouseDoor = { x = 1116, y = -3477, z = 181, type = 'Door' },
+
+	-- Solar Power Station
+	SolarPowerStationDoor1 = { x = -200, y = -2801, z = 20, type = 'Door' },
+	SolarPowerStationDoor2 = { x = -198, y = -2820, z = 20, type = 'Door' },
+
 }
 
 function unlockDoor(object)

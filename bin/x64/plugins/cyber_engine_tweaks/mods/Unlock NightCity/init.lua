@@ -52,12 +52,12 @@ registerHotkey("next_tv_channel", "Next TV Channel", function() -- Right Arrow
 	packages.DeviceManager.SwitchPreviousTVChannel(object)
 end)
 
-registerHotkey("turn_off_computer", "Turn Off Computer", function() -- Shift + F 
+registerHotkey("turn_off_computer", "Toogle Computer State", function() -- Shift + F 
 	local object = tt:GetLookAtObject(Game.GetPlayer(), false, false)
-	packages.DeviceManager.TurnOffComputer(object)
+	packages.DeviceManager.ToogleComputerState(object)
 end)
 
-registerHotkey("main_mod_function_key", "Main Mod Function Key", function() -- Shift + F 
+registerHotkey("main_mod_function_key", "Main Mod Function Key", function() -- F 
 	local stopAfter = false
 
 	-- Check for Teleport location
