@@ -99,9 +99,9 @@ function SlotMachineManager.CheckSlotMachine(object, slotCoolDownTime, ItemsMana
 
                     qs:SetFactStr("lastTimeUsedSlot", getNextSlotUsableTime(slotCoolDownTime))
 
-                    as:AddLog("Slot Machine: Item Generated !")
+					Game.GetPlayer():SetWarningMessage("Slot Machine: Item Generated !")
                 else
-                    as:AddLog("Slot Machine: Still In Cooldown !")
+					Game.GetPlayer():SetWarningMessage("Slot Machine: Still In Cooldown !")
                 end
 
                 return true

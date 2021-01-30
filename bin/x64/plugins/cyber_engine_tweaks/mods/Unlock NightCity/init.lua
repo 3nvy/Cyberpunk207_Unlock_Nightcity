@@ -38,7 +38,7 @@ registerForEvent("onInit", function()
 
 	tt = Game.GetTargetingSystem()
 
-	print("[Unlock NightCity] Initialized | Version: 1.4.2")
+	print("[Unlock NightCity] Initialized | Version: 1.5.0")
 end)
 
 
