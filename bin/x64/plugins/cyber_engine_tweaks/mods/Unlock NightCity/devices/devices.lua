@@ -50,16 +50,9 @@ function unlockElevatorTerminal(object)
 	print('[Unlock NightCity] Elevator Terminal Unlocked')
 end
 
-function turnOffComputer(devicePS)
-	if not devicePS:IsInSleepMode() then
-		ps:QueuePSDeviceEvent(devicePS:ActionToggleON())
-		devicePS:SetIsInSleepMode(true)
-	end
-
-	if devicePS:IsON() then
-		ps:QueuePSDeviceEvent(devicePS:ActionToggleON())
-		devicePS:SetIsInSleepMode(true)
-	end
+function toogleComputerState(devicePS)
+	ps:QueuePSDeviceEvent(devicePS:ActionToggleON())
+	devicePS:SetIsInSleepMode(true)
 end
 
 
@@ -75,9 +68,9 @@ function DeviceManager.SwitchNextTVChannel(object)
 	end
 end
 
-function DeviceManager.TurnOffComputer(object)
+function DeviceManager.ToogleComputerState(object)
 	if  object and object:ToString() == "Computer" then
-		turnOffComputer(object:GetDevicePS())
+		toogleComputerState(object:GetDevicePS())
 	end
 end
 
