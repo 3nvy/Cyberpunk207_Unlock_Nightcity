@@ -7,22 +7,24 @@ smugglingCost = 50000
 -- Enable Debug
 enableDebug = false
 
+-- Delta Time For Updated
+deltaTime = 0
+
 -- Mod Code
 packages = {
-	ItemsManager = "misc.items",
-	TeleportManager = "teleports.teleports",
-	DoorManager = "doors.doors",
-	DeviceManager = "devices.devices",
-	SlotMachineManager = "slotmachine.slotmachine",
-	SmugglerManager = "smuggler.smuggler",
+	ItemsManager = "misc/items",
+	TeleportManager = "teleports/teleports",
+	DoorManager = "doors/doors",
+	DeviceManager = "devices/devices",
+	SlotMachineManager = "slotmachine/slotmachine",
+	SmugglerManager = "smuggler/smuggler",
 }
 
-rootPath = "plugins.cyber_engine_tweaks.mods.Unlock NightCity."
 
 function loadPackages()
 
 	for pkgName, pkgLocation in pairs(packages) do
-		packages[pkgName] = require(rootPath .. pkgLocation)
+		packages[pkgName] = require(pkgLocation)
 
 		if enableDebug then
 			packages[pkgName].Log()
@@ -30,6 +32,10 @@ function loadPackages()
 		
 	end
 
+end
+
+function runUpdated()
+	packages.SmugglerManager.UpdateSmugglerWindow()
 end
 
 -- print(Game.GetTargetingSystem():GetLookAtObject(Game.GetPlayer(), false, false):GetWorldPosition())
@@ -87,38 +93,18 @@ registerHotkey("main_mod_function_key", "Main Mod Function Key", function() -- F
 end)
 
 
-registerForEvent("onUpdate", function()
+registerForEvent("onUpdate", function(dt)
 
-	packages.SmugglerManager.UpdateSmugglerWindow()
+	deltaTime = deltaTime + dt
+
+	if deltaTime > 1 then
+		runUpdated()
+        deltaTime = deltaTime - 1
+    end
 
 end)
 
 registerForEvent("onDraw", function()
-	ImGui.PushStyleColor(ImGuiCol.PopupBg, 0.21, 0.08, 0.08, 0.85)
-	ImGui.PushStyleColor(ImGuiCol.Border, 0.4, 0.17, 0.12, 1)
-	ImGui.PushStyleColor(ImGuiCol.Separator, 0.4, 0.17, 0.12, 1)
-	
-	if (drawSmuggleWindow) then
-		ImGui.BeginTooltip()
-		ImGui.SetWindowFontScale(1.6)
-		ImGui.Spacing()
-			ImGui.TextColored(0.45, 1, 0.5, 1, "[Warning] Getting out of the Watson District during Lockdown may break some quests.")
-			ImGui.Spacing()
-			ImGui.Separator()
-			ImGui.Spacing()
-			ImGui.TextColored(0.2, 1, 1, 1, "Sure, I can smuggle you out of the Watson District, but it will cost you.")
-			ImGui.Spacing()
-			ImGui.TextColored(0.2, 1, 1, 1, "Say, 50.000 eddies? I need it to be worth the risk for me!")
-			ImGui.Spacing()
-			ImGui.Separator()
-			ImGui.Spacing()
-			ImGui.TextColored(0.98, 0.85, 0.25, 1, "[F] Sure, just get me out of here already")
-			ImGui.Spacing()
-			ImGui.Spacing()
-			ImGui.TextColored(0.98, 0.85, 0.25, 1, "[Look Away] Nah, maybe another time.")
-			ImGui.Spacing()
-		ImGui.EndTooltip()
-	end
-
-	ImGui.PopStyleColor(3)
+	-- print(drawSmuggleWindow)
+	packages.SmugglerManager.DrawSmugglerWindow(drawSmuggleWindow)
 end)
