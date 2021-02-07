@@ -98,7 +98,6 @@ registerForEvent("onUpdate", function(dt)
 	deltaTime = deltaTime + dt
 
 	if deltaTime > 1 then
-		print("lol")
 		runUpdated()
         deltaTime = deltaTime - 1
     end
