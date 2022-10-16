@@ -6,13 +6,13 @@ local AllowedDoors = {
 	konpekiTowerSuiteShaft = { x = -2228, y = 1769, z = nil, type = 'FakeDoor' },
 	konpekiTowerParkingGarangeDoor = { x = -2208, y = 1710, z = 7, type = 'Door' },
 	konpekiTowerBarrier1 = { x = -2259.5989, y = 1707.0662, z = 19.0, type = 'Door' },
-	
+
 	-- Gig Penthouse
 	gigPenthouseBuildingDoor = { x = -1185, y = 1401, z = nil, type = 'Door' },
-	
+
 	-- Voodoo Chapel Undergroud Base
 	voodooUndergroundDoor = { x = -1733, y = -1903, z = nil, type = 'Door' },
-	
+
 	-- Clouds
 	cloudsEntranceDoor = { x = -637, y = 806, z = nil, type = 'Door' },
 	cloudsSecretAreaDoor1 = { x = -648, y = 791, z = nil, type = 'Door' },
@@ -94,23 +94,23 @@ function unlockDoor(object)
 	local objDPS = object:GetDevicePS();
 
 	-- Unseal door if sealed
-	if(objDPS:IsSealed()) then
-		objDPS:ToggleSealOnDoor() 
+	if (objDPS:IsSealed()) then
+		objDPS:ToggleSealOnDoor()
 	end
 
 	-- Unlock door if locked
-	if(objDPS:IsLocked()) then
-		objDPS:ToggleLockOnDoor() 
+	if (objDPS:IsLocked()) then
+		objDPS:ToggleLockOnDoor()
 	end
 
 	objDPS:SetDeviceState(1) -- Restore power to door
-	object:OpenDoor() -- Opens door
+	-- object:OpenDoor() -- Opens door
 	objDPS:SetCloseItself(true) -- Closes door automatically
 
 	print('[Unlock NightCity] Door Unlocked')
 end
 
-function unlockFakeDoor(object) 
+function unlockFakeDoor(object)
 	object:Dispose()
 
 	print('[Unlock NightCity] Fake Door Disposed')
@@ -126,7 +126,7 @@ function DoorManager.CheckAllowedDoor(object)
 
 		if match and matchz then
 
-			if doorData.type == "Door" then 
+			if doorData.type == "Door" then
 				unlockDoor(object)
 			elseif doorData.type == "FakeDoor" then
 				unlockFakeDoor(object)

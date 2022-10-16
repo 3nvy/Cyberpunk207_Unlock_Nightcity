@@ -10,8 +10,16 @@ enableDebug = false
 -- Delta Time For Updated
 deltaTime = 0
 
+canDraw = false
+
+local timer;
+
+
 -- Mod Code
-packages = {
+local DialogUI = require("lib/interactionUI")
+local Cron = require("lib/Cron")
+
+local packages = {
 	ItemsManager = "misc/items",
 	TeleportManager = "teleports/teleports",
 	DoorManager = "doors/doors",
@@ -19,7 +27,6 @@ packages = {
 	SlotMachineManager = "slotmachine/slotmachine",
 	SmugglerManager = "smuggler/smuggler",
 }
-
 
 function loadPackages()
 
@@ -29,82 +36,45 @@ function loadPackages()
 		if enableDebug then
 			packages[pkgName].Log()
 		end
-		
+
 	end
+
+	canDraw = true
 
 end
 
-function runUpdated()
+function runUpdates()
 	packages.SmugglerManager.UpdateSmugglerWindow()
 end
 
--- print(Game.GetTargetingSystem():GetLookAtObject(Game.GetPlayer(), false, false):GetWorldPosition())
+function checkForUpdates(object)
+
+	if not object then return end
+
+	packages.DoorManager.CheckAllowedDoor(object);
+	packages.DeviceManager.CheckDevice(object);
+end
+
+
 registerForEvent("onInit", function()
 	loadPackages()
 
-	tt = Game.GetTargetingSystem()
+	DialogUI.init()
 
-	print("[Unlock NightCity] Initialized | Version: 1.5.0")
+	timer = Cron.Every(1, function()
+		local object = Game.GetTargetingSystem():GetLookAtObject(Game.GetPlayer(), false, false);
+		checkForUpdates(object)
+		DialogUI.Cleanup(object)
+	end)
+
+	print("[Unlock NightCity] Initialized | Version: 1.6.0")
 end)
-
-
-registerHotkey("prev_tv_channel", "Prev TV Channel", function() -- Left Arrow 
-	local object = tt:GetLookAtObject(Game.GetPlayer(), false, false)
-	packages.DeviceManager.SwitchPreviousTVChannel(object)
-end)
-
-registerHotkey("next_tv_channel", "Next TV Channel", function() -- Right Arrow 
-	local object = tt:GetLookAtObject(Game.GetPlayer(), false, false)
-	packages.DeviceManager.SwitchPreviousTVChannel(object)
-end)
-
-registerHotkey("turn_off_computer", "Toogle Computer State", function() -- Shift + F 
-	local object = tt:GetLookAtObject(Game.GetPlayer(), false, false)
-	packages.DeviceManager.ToogleComputerState(object)
-end)
-
-registerHotkey("main_mod_function_key", "Main Mod Function Key", function() -- F 
-	local stopAfter = false
-
-	-- Check for Teleport location
-	stopAfter = packages.TeleportManager.CheckTeleport()
-	if stopAfter then return end
-
-	-- Stop Runtime If No Object Found
-	local object = tt:GetLookAtObject(Game.GetPlayer(), false, false)
-	if not object then return end
-
-	-- Check for Devices
-	stopAfter = packages.DeviceManager.CheckDevice(object)
-	if stopAfter then return end
-
-	-- Check for SlotMachine
-	stopAfter = packages.SlotMachineManager.CheckSlotMachine(object, slotCoolDownTime, packages.ItemsManager)
-	if stopAfter then return end
-
-	-- Check for Allowed Doors
-	stopAfter = packages.DoorManager.CheckAllowedDoor(object)
-	if stopAfter then return end
-
-
-	-- Check for Smuggler
-	stopAfter = packages.SmugglerManager.CheckSmuggler(object, smugglingCost)
-	if stopAfter then return end
-end)
-
 
 registerForEvent("onUpdate", function(dt)
-
-	deltaTime = deltaTime + dt
-
-	if deltaTime > 1 then
-		runUpdated()
-        deltaTime = deltaTime - 1
-    end
-
+	Cron.Update(dt)
+	DialogUI.update()
 end)
 
-registerForEvent("onDraw", function()
-	-- print(drawSmuggleWindow)
-	packages.SmugglerManager.DrawSmugglerWindow(drawSmuggleWindow)
+registerForEvent("onShutdown", function()
+	Cron.Halt(timer)
 end)

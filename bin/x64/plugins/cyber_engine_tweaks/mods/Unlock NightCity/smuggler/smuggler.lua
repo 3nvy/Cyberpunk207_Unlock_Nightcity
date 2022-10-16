@@ -10,13 +10,17 @@ local moneyID = ItemID.new(TweakDBID.new("Items.money"))
 
 
 function SmugglerManager.UpdateSmugglerWindow()
-    local object = tt:GetLookAtObject(Game.GetPlayer(), false, false)
+	local player = Game.GetPlayer()
 
-    if object and object:ToString() == "NPCPuppet" and object:GetRecordID().hash == 966543935 then
-        drawSmuggleWindow = true
-    else
-        drawSmuggleWindow = false
-    end
+	if player then
+		local object = tt:GetLookAtObject(player, false, false)
+
+		if object and object:ToString() == "NPCPuppet" and object:GetRecordID().hash == 966543935 then
+			drawSmuggleWindow = true
+		else
+			drawSmuggleWindow = false
+		end
+	end
 end
 
 function SmugglerManager.CheckSmuggler(object, smugglingCost)
